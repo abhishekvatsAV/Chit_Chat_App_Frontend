@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+
+import { Route, Routes } from "react-router-dom";
+import Homepage from "./pages/Homepage";
+import ChatPage from "./pages/ChatPage";
+
+import { useCallback } from "react";
+import Particles from "react-particles";
+import { loadFull } from "tsparticles";
+import options from "./animations/particles.json";
 
 function App() {
+  const particlesInit = useCallback(async (engine) => {
+    // console.log(engine);
+    await loadFull(engine);
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={options}
+      />
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/chats" element={<ChatPage />} />
+      </Routes>
     </div>
   );
 }
