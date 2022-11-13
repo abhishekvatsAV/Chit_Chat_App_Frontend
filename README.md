@@ -1,20 +1,23 @@
-# Getting Started with Create React App
+# Chit-Chat-App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a Chat App.
 
-## Available Scripts
+## `Backend Link`
+[https://github.com/abhishekvatsAV/Chit_Chat_App_Backend]
 
-In the project directory, you can run:
+## To Run Locally
 
-### `npm start`
+First Put backend and frontend folder inside a new folder
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+then first open terminal in both backend and frontend folder.  
+And Run these cmnd
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### backend
+1. npm install
+2. npm start
 
+### frontend
+1. npm install
+2. npm start
 
-### `Backend Link`
-
-[Backend](https://github.com/abhishekvatsAV/Chit_Chat_App_Backend)
+Now app will run on [http://localhost:3000/].
