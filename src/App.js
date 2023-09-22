@@ -11,17 +11,13 @@ import options from "./animations/particles.json";
 
 function App() {
   const particlesInit = useCallback(async (engine) => {
-    // console.log(engine);
+    // // console.log(engine);
     await loadFull(engine);
   }, []);
 
   return (
     <div className="App">
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={options}
-      />
+      <Particles id="tsparticles" init={particlesInit} options={options} />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/chats" element={<ChatPage />} />

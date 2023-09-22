@@ -15,6 +15,7 @@ import ChatLoading from "./ChatLoading";
 import { getSender, getSenderDetails } from "../config/ChatLogics";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { AiOutlineUser } from "react-icons/ai";
+import { endpoint } from "../helper";
 
 const MyChats = ({ fetchAgain }) => {
   const {
@@ -30,7 +31,7 @@ const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
 
   const fetchChats = async () => {
-    // console.log(user._id);
+    // // console.log(user._id);
     try {
       const config = {
         headers: {
@@ -39,10 +40,10 @@ const MyChats = ({ fetchAgain }) => {
       };
 
       const { data } = await axios.get(
-        "http://localhost:4000/api/chat",
+        `${endpoint}/api/chat`,
         config
       );
-      console.log(data);
+      // console.log(data);
       setChats(data);
     } catch (error) {
       toast({

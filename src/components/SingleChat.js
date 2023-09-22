@@ -30,7 +30,8 @@ import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
 
 import io from "socket.io-client";
-const ENDPOINT = "http://localhost:4000";
+import { endpoint } from "../helper";
+const ENDPOINT = endpoint;
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -79,12 +80,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
       setLoading(true);
       const { data } = await axios.get(
-        "http://localhost:4000/api/message/" + selectedChat._id,
+        `${endpoint}/api/message/` + selectedChat._id,
         config
       );
-      console.log(messages);
+      // console.log(messages);
       setMessages(data);
-      console.log(data);
+      // console.log(data);
       setLoading(false);
 
       socket.emit("join chat", selectedChat._id);
@@ -117,14 +118,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
 
         const { data } = await axios.post(
-          "http://localhost:4000/api/message",
+          `${endpoint}/api/message`,
           {
             content: newMessage,
             chatId: selectedChat._id,
           },
           config
         );
-        // console.log(data);
+        // // console.log(data);
         setLatestMessage(data);
         setNewMessage("");
 

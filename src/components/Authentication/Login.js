@@ -11,6 +11,7 @@ import {
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { endpoint } from "../../helper";
 
 const Login = () => {
   const [email, setEmail] = useState();
@@ -36,14 +37,14 @@ const Login = () => {
       return;
     }
 
-    // console.log(email, password);
+    // // console.log(email, password);
     try {
-      const { data } = await axios.post(
-        "http://localhost:4000/api/user/login",
-        { email, password }
-      );
+      const { data } = await axios.post(`${endpoint}/api/user/login`, {
+        email,
+        password,
+      });
 
-      // console.log(JSON.stringify(data));
+      // // console.log(JSON.stringify(data));
       toast({
         title: "Login Successful",
         status: "success",
