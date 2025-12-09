@@ -15,7 +15,6 @@ import ChatLoading from "./ChatLoading";
 import { getSender, getSenderDetails } from "../config/ChatLogics";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { AiOutlineUser } from "react-icons/ai";
-import { endpoint } from "../helper";
 
 const MyChats = ({ fetchAgain }) => {
   const {
