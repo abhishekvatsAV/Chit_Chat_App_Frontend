@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
 import axios from "../config/axios";
 import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
-import Lottie from "react-lottie";
+import Lottie from "lottie-react";
 import animationData from "../animations/typing.json";
 
 import io from "socket.io-client";
