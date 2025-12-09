@@ -27,13 +27,19 @@ const ScrollableChat = ({ messages }) => {
             <span
               style={{
                 backgroundColor: `${
-                  m.sender._id === user._id ? "#BEE3F8" : "#B9F5D0"
+                  m.sender._id === user._id ? "#319795" : "#2D3748"
                 }`,
+                color: "white",
                 marginLeft: isSameSenderMargin(messages, m, i, user._id),
                 marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
-                borderRadius: "20px",
-                padding: "5px 15px",
+                borderRadius: m.sender._id === user._id 
+                  ? "20px 20px 5px 20px" 
+                  : "20px 20px 20px 5px",
+                padding: "8px 16px",
                 maxWidth: "75%",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                wordWrap: "break-word",
+                transition: "all 0.2s",
               }}
             >
               {m.content}

@@ -23,7 +23,7 @@ import {
 import ProfileModal from "../components/miscellaneous/ProfileModal";
 import UpdateGroupChatModel from "./miscellaneous/UpdateGroupChatModel";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../config/axios";
 import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
@@ -72,16 +72,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const fetchMessages = async () => {
     if (!selectedChat) return;
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      setLoading(true);
       const { data } = await axios.get(
-        `${endpoint}/api/message/` + selectedChat._id,
-        config
+        `/api/message/` + selectedChat._id
       );
       // console.log(messages);
       setMessages(data);
@@ -111,19 +103,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     if (newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
-
         const { data } = await axios.post(
-          `${endpoint}/api/message`,
+          `/api/message`,
           {
             content: newMessage,
             chatId: selectedChat._id,
-          },
-          config
+          }
         );
         // // console.log(data);
         setLatestMessage(data);
@@ -161,7 +146,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setMessages([...messages, newMessageRecieved]);
       }
     });
-  });
+
+    return () => {
+      socket.off("message recieved");
+    };
+  }, [messages, notification, fetchAgain]);
 
   let sender;
   if (selectedChat) {
@@ -244,11 +233,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             flexDir="column"
             justifyContent="flex-end"
             p={3}
-            bg="#E8E8E8"
+            bg="whiteAlpha.100"
             w="100%"
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
+            gap={2}
           >
             {loading ? (
               <Spinner
@@ -284,21 +274,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                   />
                 </div>
               )}
-              <InputGroup>
+              <InputGroup size="lg">
                 <Input
                   variant="filled"
-                  bg="#D9D9D9"
-                  placeholder="Enter a message.."
+                  bg="whiteAlpha.200"
+                  placeholder="Type a message.."
                   onChange={typingHandler}
                   value={newMessage}
+                  _hover={{ bg: "whiteAlpha.300" }}
+                  _focus={{ bg: "whiteAlpha.300", borderColor: "brand.500" }}
+                  borderRadius="full"
+                  pr="60px"
                 />
                 <InputRightAddon
-                  children={
-                    <img src="https://img.icons8.com/ios-glyphs/30/null/paper-plane.png" />
-                  }
+                  bg="brand.500"
+                  _hover={{ bg: "brand.600" }}
+                  cursor="pointer"
                   onClick={sendMessage}
-                  style={{ cursor: "pointer" }}
-                />
+                  borderRadius="full"
+                  px={4}
+                  transition="all 0.2s"
+                >
+                  <img 
+                    src="https://img.icons8.com/ios-glyphs/30/ffffff/paper-plane.png" 
+                    alt="Send"
+                  />
+                </InputRightAddon>
               </InputGroup>
             </FormControl>
           </Flex>

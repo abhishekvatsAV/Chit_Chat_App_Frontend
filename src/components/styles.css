@@ -3,4 +3,16 @@
   flex-direction: column;
   overflow-y: scroll;
   scrollbar-width: none;
+  height: 100%;
+  padding: 10px;
+}
+
+.messages::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scrolling */
+.messages {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -11,9 +11,11 @@ const UserBadgeItem = ({ user, handleFunction }) => {
       mb={2}
       variant="solid"
       fontSize={12}
-      colorScheme="purple"
+      colorScheme="brand"
       cursor="pointer"
       onClick={handleFunction}
+      _hover={{ bg: "brand.600", transform: "scale(1.05)" }}
+      transition="all 0.2s"
     >
       {user.name}
       <CloseIcon pl={1} />

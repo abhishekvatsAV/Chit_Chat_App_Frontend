@@ -6,13 +6,16 @@ import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { ChatState } from "../../context/ChatProvider";
 import { endpoint } from "../../helper";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
+
   const navigate = useNavigate();
+  const { setUser } = ChatState();
 
   const [name, setName] = useState();
   const [email, setEmail] = useState();
@@ -61,12 +64,13 @@ const Signup = () => {
         position: "bottom",
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
+      setUser(data);
       setPicLoading(false);
       navigate("/chats");
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error.response?.data?.message || error.message || "Failed to register. Please try again.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -128,6 +132,10 @@ const Signup = () => {
         <Input
           placeholder="Enter Your Name"
           onChange={(e) => setName(e.target.value)}
+          variant="filled"
+          bg="whiteAlpha.100"
+          _hover={{ bg: "whiteAlpha.200" }}
+          _focus={{ bg: "whiteAlpha.200" }}
         />
       </FormControl>
       <FormControl id="email" isRequired>
@@ -136,6 +144,10 @@ const Signup = () => {
           type="email"
           placeholder="Enter Your Email Address"
           onChange={(e) => setEmail(e.target.value)}
+          variant="filled"
+          bg="whiteAlpha.100"
+          _hover={{ bg: "whiteAlpha.200" }}
+          _focus={{ bg: "whiteAlpha.200" }}
         />
       </FormControl>
       <FormControl id="password" isRequired>
@@ -145,6 +157,10 @@ const Signup = () => {
             type={show ? "text" : "password"}
             placeholder="Enter Password"
             onChange={(e) => setPassword(e.target.value)}
+            variant="filled"
+            bg="whiteAlpha.100"
+            _hover={{ bg: "whiteAlpha.200" }}
+            _focus={{ bg: "whiteAlpha.200" }}
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleClick}>
@@ -160,6 +176,10 @@ const Signup = () => {
             type={show ? "text" : "password"}
             placeholder="Confirm password"
             onChange={(e) => setConfirmpassword(e.target.value)}
+            variant="filled"
+            bg="whiteAlpha.100"
+            _hover={{ bg: "whiteAlpha.200" }}
+            _focus={{ bg: "whiteAlpha.200" }}
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleClick}>
@@ -175,10 +195,14 @@ const Signup = () => {
           p={1.5}
           accept="image/*"
           onChange={(e) => postDetails(e.target.files[0])}
+          variant="filled"
+          bg="whiteAlpha.100"
+          _hover={{ bg: "whiteAlpha.200" }}
+          _focus={{ bg: "whiteAlpha.200" }}
         />
       </FormControl>
       <Button
-        colorScheme="blue"
+        colorScheme="brand"
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}

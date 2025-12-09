@@ -16,7 +16,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
+import axios from "../../config/axios";
 import { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
@@ -59,18 +59,12 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     try {
       setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
       const { data } = await axios.put(
-        `${endpoint}/api/chat/groupadd`,
+        `/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
           userId: user1._id,
-        },
-        config
+        }
       );
 
       setSelectedChat(data);
@@ -79,7 +73,7 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error.response?.data?.message || error.message || "Failed to add user",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -104,18 +98,12 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     try {
       setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
       const { data } = await axios.put(
-        `${endpoint}/api/chat/groupremove`,
+        `/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
           userId: user1._id,
-        },
-        config
+        }
       );
 
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
@@ -125,7 +113,7 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error.response?.data?.message || error.message || "Failed to add user",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -141,19 +129,12 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     try {
       setRenameloading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
       const { data } = await axios.put(
-        `${endpoint}/api/chat/rename`,
+        `/api/chat/rename`,
         {
           chatId: selectedChat._id,
           chatName: groupChatName,
-        },
-        config
+        }
       );
 
       setSelectedChat(data);
@@ -162,7 +143,7 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error.response?.data?.message || error.message || "Failed to rename group",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -181,14 +162,8 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
     try {
       setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
       const { data } = await axios.get(
-        `${endpoint}/api/user?search=${search}`,
-        config
+        `/api/user?search=${query}`
       );
       // console.log(data);
       setLoading(false);
@@ -208,7 +183,7 @@ const UpdateGroupChatModel = ({ fetchAgain, setFetchAgain, fetchMessages }) => {
 
   return (
     <>
-      <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+      <IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />

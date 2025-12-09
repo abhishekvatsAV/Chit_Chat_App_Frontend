@@ -24,7 +24,7 @@ import React, { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import ProfileModal from "./ProfileModal";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../../config/axios";
 import ChatLoading from "../ChatLoading";
 import UserListItem from "../userAvatar/UserListItem";
 import { getSender } from "../../config/ChatLogics";
@@ -70,15 +70,8 @@ const SideDrawer = () => {
     try {
       setLoading(true);
 
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
       const { data } = await axios.get(
-        `${endpoint}/api/user?search=` + search,
-        config
+        `/api/user?search=` + search
       );
       setLoading(false);
       setSearchResult(data);
@@ -97,17 +90,7 @@ const SideDrawer = () => {
   const accessChat = async (userId) => {
     try {
       setLoadingChat(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      const { data } = await axios.post(
-        `${endpoint}/api/chat`,
-        { userId },
-        config
-      );
+      const { data } = await axios.post(`/api/chat`, { userId });
 
       if (!chats.find((c) => c._id === data._id)) {
         setChats([data, ...chats]);
@@ -133,15 +116,21 @@ const SideDrawer = () => {
       <Flex
         justifyContent="space-between"
         alignItems="center"
-        bg="white"
+        bg="whiteAlpha.200"
+        backdropFilter="blur(10px)"
         w="100%"
-        p="5px 10px 5px 10px"
-        borderWidth="5px"
+        p="10px 15px"
+        borderBottomWidth="2px"
+        borderColor="whiteAlpha.300"
+        boxShadow="md"
+        position="sticky"
+        top={0}
+        zIndex={10}
       >
         <Tooltip label="Search Users to Chat" hasArrow placement="bottom-end">
           <Button variant="ghost" onClick={onOpen}>
             <i className="fa-solid fa-magnifying-glass"></i>
-            <Text d={{ base: "none", md: "flex" }} px="4">
+            <Text display={{ base: "none", md: "flex" }} px="4">
               Search User
             </Text>
           </Button>
@@ -158,11 +147,13 @@ const SideDrawer = () => {
               />
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
-            <MenuList pl={2}>
+            <MenuList pl={2} bg="gray.800" borderColor="gray.700" zIndex={10}>
               {!notification.length && "No New Messages"}
               {notification.map((notif) => (
                 <MenuItem
                   key={notif._id}
+                  bg="gray.800"
+                  _hover={{ bg: "gray.700" }}
                   onClick={() => {
                     setSelectedChat(notif.chat);
                     setNotification(notification.filter((n) => n !== notif));
@@ -184,12 +175,20 @@ const SideDrawer = () => {
                 src={user.pic}
               />
             </MenuButton>
-            <MenuList>
+            <MenuList bg="gray.800" borderColor="gray.700" zIndex={10}>
               <ProfileModal user={user}>
-                <MenuItem>My Profile</MenuItem>
+                <MenuItem bg="gray.800" _hover={{ bg: "gray.700" }}>
+                  My Profile
+                </MenuItem>
               </ProfileModal>
-              <MenuDivider />
-              <MenuItem onClick={logoutHandler}>LogOut</MenuItem>
+              <MenuDivider borderColor="gray.700" />
+              <MenuItem
+                bg="gray.800"
+                _hover={{ bg: "gray.700" }}
+                onClick={logoutHandler}
+              >
+                LogOut
+              </MenuItem>
             </MenuList>
           </Menu>
         </div>
