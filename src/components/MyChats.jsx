@@ -156,7 +156,6 @@ const MyChats = ({ fetchAgain }) => {
                   isGroup={chat.isGroupChat}
                   name={chat.isGroupChat ? chat.chatName : getSenderDetails(loggedUser, chat.users).name}
                   src={chat.isGroupChat ? undefined : getSenderDetails(loggedUser, chat.users).pic}
-                  isOnline={!chat.isGroupChat}
                 />
                 <Box minW={0} flex={1}>
                   <Flex justify="space-between" align="center" gap={2}>

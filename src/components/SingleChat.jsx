@@ -1,12 +1,13 @@
 import {
   Avatar,
+  Button,
   Flex,
   FormControl,
   IconButton,
   Image,
   Input,
   InputGroup,
-  InputRightAddon,
+  InputRightElement,
   Spinner,
   Text,
   useToast,
@@ -77,14 +78,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat]);
 
   useEffect(() => {
+    let isCurrentRequest = true;
+
     const fetchMessages = async () => {
       if (!selectedChat) return;
+      const chatId = selectedChat._id;
       setLoading(true);
       try {
-        const { data } = await axios.get(`/api/message/${selectedChat._id}`);
+        const { data } = await axios.get(`/api/message/${chatId}`);
+        if (!isCurrentRequest || selectedChatRef.current?._id !== chatId) return;
         setMessages(data);
-        socketRef.current?.emit("join chat", selectedChat._id);
+        socketRef.current?.emit("join chat", chatId);
       } catch (error) {
+        if (!isCurrentRequest || selectedChatRef.current?._id !== chatId) return;
         toast({
           title: "Unable to load messages",
           description: error.response?.data?.message || error.message,
@@ -93,10 +99,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           isClosable: true,
         });
       } finally {
-        setLoading(false);
+        if (isCurrentRequest && selectedChatRef.current?._id === chatId) {
+          setLoading(false);
+        }
       }
     };
     fetchMessages();
+
+    return () => {
+      isCurrentRequest = false;
+    };
   }, [selectedChat, toast]);
 
   const sendMessage = async () => {
@@ -215,16 +227,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               onChange={typingHandler}
               borderRadius="full"
             />
-            <InputRightAddon
-              bg="brand.500"
-              color="white"
-              cursor="pointer"
-              onClick={sendMessage}
-              borderRadius="full"
-              px={5}
-            >
-              Send
-            </InputRightAddon>
+            <InputRightElement width="auto" h="100%" pr={1}>
+              <Button
+                colorScheme="brand"
+                borderRadius="full"
+                size="md"
+                onClick={sendMessage}
+                aria-label="Send message"
+              >
+                Send
+              </Button>
+            </InputRightElement>
           </InputGroup>
         </FormControl>
       </Flex>

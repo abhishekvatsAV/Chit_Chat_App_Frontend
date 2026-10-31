@@ -136,6 +136,7 @@ const SideDrawer = () => {
           <Button
             variant="ghost"
             onClick={onOpen}
+            aria-label="Find a crew mate"
             borderRadius="12px"
             leftIcon={<FiSearch />}
             color="whiteAlpha.800"
@@ -177,6 +178,7 @@ const SideDrawer = () => {
               minW="42px"
               borderRadius="12px"
               position="relative"
+              aria-label="Notifications"
               _hover={{ bg: "whiteAlpha.100" }}
             >
               <NotificationBadge

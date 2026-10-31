@@ -112,7 +112,7 @@ const Login = () => {
         colorScheme="brand"
         width="100%"
         style={{ marginTop: 15 }}
-        onClick={submitHandler}
+        onClick={() => submitHandler()}
         isLoading={loading}
       >
         Login
