@@ -102,6 +102,7 @@ chat together:
 
 - Guest 1: `guest1@example.com` / `guest123`
 - Guest 2: `guest2@example.com` / `guest123`
+- Legacy Guest User: `guest@example.com` / `123456`
 
 ### Real Time Chatting with Typing indicators
 

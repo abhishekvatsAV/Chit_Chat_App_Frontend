@@ -138,6 +138,14 @@ const Login = () => {
       >
         Enter as Guest 2
       </Button>
+      <Button
+        variant="ghost"
+        width="100%"
+        onClick={() => submitHandler("guest@example.com", "123456")}
+        isLoading={loading}
+      >
+        Enter with legacy Guest User
+      </Button>
     </VStack>
   );
 };
