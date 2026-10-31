@@ -9,14 +9,16 @@ const ChatPage = () => {
   const { user } = ChatState();
   const [fetchAgain, setFetchAgain] = useState(false);
   return (
-    <Box w="100%" h="100vh" display="flex" flexDirection="column">
+    <Box w="100%" h="100vh" display="flex" flexDirection="column" p={{ base: 0, md: 3 }}>
       {user && <SideDrawer />}
       <Flex 
         justifyContent="space-between" 
         w="100%" 
-        h="calc(100vh - 60px)" 
-        p="10px"
-        gap="10px"
+        h={{ base: "calc(100vh - 72px)", md: "calc(100vh - 84px)" }}
+        p={{ base: 2, md: 3 }}
+        gap={{ base: 2, md: 4 }}
+        maxW="1500px"
+        mx="auto"
       >
         {user && <MyChats fetchAgain={fetchAgain} />}
         {user && (
