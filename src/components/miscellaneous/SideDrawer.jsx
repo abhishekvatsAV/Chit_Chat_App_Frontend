@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  Box,
   Drawer,
   DrawerBody,
   DrawerContent,
