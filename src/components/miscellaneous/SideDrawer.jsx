@@ -71,7 +71,7 @@ const SideDrawer = () => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `/api/user?search=` + search
+        `/api/user?search=${encodeURIComponent(search)}`
       );
       setLoading(false);
       setSearchResult(data);
@@ -102,7 +102,7 @@ const SideDrawer = () => {
     } catch (error) {
       toast({
         title: "Error fetching the chat",
-        description: error.message,
+        description: error.response?.data?.message || error.message,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -135,8 +135,8 @@ const SideDrawer = () => {
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
-          Chit-Chat
+        <Text fontSize="2xl" fontFamily="Work sans" fontWeight="bold">
+          ⚓ Sea Chat
         </Text>
         <div>
           <Menu>

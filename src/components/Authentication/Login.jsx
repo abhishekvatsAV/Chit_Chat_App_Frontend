@@ -26,9 +26,9 @@ const Login = () => {
 
   const handleClick = () => setShow(!show);
 
-  const submitHandler = async () => {
+  const submitHandler = async (loginEmail = email, loginPassword = password) => {
     setLoading(true);
-    if (!email || !password) {
+    if (!loginEmail || !loginPassword) {
       toast({
         title: "Please Fill all the Feilds",
         status: "warning",
@@ -43,8 +43,8 @@ const Login = () => {
     // // console.log(email, password);
     try {
       const { data } = await axios.post(`${endpoint}/api/user/login`, {
-        email,
-        password,
+        email: loginEmail,
+        password: loginPassword,
       });
 
       // // console.log(JSON.stringify(data));
@@ -122,13 +122,21 @@ const Login = () => {
         variant="outline"
         colorScheme="brand"
         width="100%"
-        onClick={() => {
-          setEmail("guest@example.com");
-          setPassword("123456");
-        }}
+        onClick={() => submitHandler("guest1@example.com", "guest123")}
+        isLoading={loading}
         _hover={{ bg: "brand.500", color: "white" }}
       >
-        Get Guest User Credentials
+        Enter as Guest 1
+      </Button>
+      <Button
+        variant="outline"
+        colorScheme="orange"
+        width="100%"
+        onClick={() => submitHandler("guest2@example.com", "guest123")}
+        isLoading={loading}
+        _hover={{ bg: "orange.500", color: "white" }}
+      >
+        Enter as Guest 2
       </Button>
     </VStack>
   );

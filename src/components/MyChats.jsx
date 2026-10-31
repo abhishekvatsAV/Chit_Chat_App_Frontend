@@ -26,7 +26,7 @@ const MyChats = ({ fetchAgain }) => {
     latestMessage,
     setLatestMessage,
   } = ChatState();
-  const [loggedUser, setLoggedUser] = useState();
+  const [loggedUser, setLoggedUser] = useState(user);
   const toast = useToast();
 
   const fetchChats = async () => {
@@ -48,9 +48,9 @@ const MyChats = ({ fetchAgain }) => {
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    setLoggedUser(user);
     fetchChats();
-  }, [fetchAgain, latestMessage]);
+  }, [fetchAgain, latestMessage, user]);
 
   return (
     <Box
@@ -104,14 +104,14 @@ const MyChats = ({ fetchAgain }) => {
               <Flex
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "brand.500" : "whiteAlpha.100"}
-                color={selectedChat === chat ? "white" : "whiteAlpha.900"}
+                bg={selectedChat?._id === chat._id ? "brand.500" : "whiteAlpha.100"}
+                color={selectedChat?._id === chat._id ? "white" : "whiteAlpha.900"}
                 px={3}
                 py={3}
                 borderRadius="lg"
                 key={chat._id}
                 _hover={{ 
-                  bg: selectedChat === chat ? "brand.600" : "whiteAlpha.300",
+                  bg: selectedChat?._id === chat._id ? "brand.600" : "whiteAlpha.300",
                   transform: "translateX(5px)"
                 }}
                 transition="all 0.2s"
