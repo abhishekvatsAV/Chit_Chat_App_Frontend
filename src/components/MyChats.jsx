@@ -1,8 +1,13 @@
 import {
-  Avatar,
   Box,
   Button,
   Flex,
+  Heading,
+  Icon,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  SimpleGrid,
   Stack,
   Text,
   useToast,
@@ -10,11 +15,12 @@ import {
 import React, { useEffect, useState } from "react";
 import { ChatState } from "../context/ChatProvider";
 import axios from "../config/axios";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, SearchIcon } from "@chakra-ui/icons";
 import ChatLoading from "./ChatLoading";
 import { getSender, getSenderDetails } from "../config/ChatLogics";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
-import { AiOutlineUser } from "react-icons/ai";
+import CrewAvatar from "./CrewAvatar";
+import { GiSailboat } from "react-icons/gi";
 
 const MyChats = ({ fetchAgain }) => {
   const {
@@ -26,7 +32,8 @@ const MyChats = ({ fetchAgain }) => {
     latestMessage,
     setLatestMessage,
   } = ChatState();
-  const [loggedUser, setLoggedUser] = useState();
+  const [loggedUser, setLoggedUser] = useState(user);
+  const [filter, setFilter] = useState("");
   const toast = useToast();
 
   const fetchChats = async () => {
@@ -48,125 +55,153 @@ const MyChats = ({ fetchAgain }) => {
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    setLoggedUser(user);
     fetchChats();
-  }, [fetchAgain, latestMessage]);
+  }, [fetchAgain, latestMessage, user]);
 
   return (
     <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
-      alignItems="center"
-      p={3}
-      bg="whiteAlpha.200"
-      backdropFilter="blur(10px)"
-      w={{ base: "100%", md: "31%" }}
-      borderRadius="xl"
-      borderWidth="1px"
-      borderColor="whiteAlpha.300"
-      boxShadow="2xl"
-      transition="all 0.3s"
-      _hover={{ boxShadow: "dark-lg" }}
+      p={{ base: 4, md: 5 }}
+      bg="rgba(20, 31, 40, .78)"
+      backdropFilter="blur(18px)"
+      w={{ base: "100%", md: "360px" }}
+      minW={{ md: "320px" }}
+      borderRadius="24px"
+      border="1px solid"
+      borderColor="whiteAlpha.200"
+      boxShadow="0 20px 60px rgba(0,0,0,.24)"
+      overflow="hidden"
     >
-      <Flex
-        pb={3}
-        px={3}
-        fontSize={{ base: "28px", md: "30px" }}
-        fontFamily="Work sans"
-        w="100%"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Avatar size="lg" cursor="pointer" name={user.name} src={user.pic} />
+      <Flex align="center" justify="space-between" mb={5}>
+        <Flex align="center" gap={3}>
+          <CrewAvatar name={user.name} src={user.pic} size="md" isOnline />
+          <Box>
+            <Text fontSize="xs" color="brand.200" fontWeight="bold" letterSpacing="0.12em">
+              YOUR CREW
+            </Text>
+            <Heading size="sm" mt={1}>{user.name}</Heading>
+          </Box>
+        </Flex>
         <GroupChatModal>
           <Button
-            display="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-            rightIcon={<AddIcon />}
+            aria-label="Create group"
+            title="Create group"
+            size="sm"
+            borderRadius="full"
+            colorScheme="brand"
+            leftIcon={<AddIcon />}
           >
-            New Group Chat
+            Create
           </Button>
         </GroupChatModal>
       </Flex>
+      <InputGroup mb={4}>
+        <InputLeftElement pointerEvents="none">
+          <SearchIcon color="whiteAlpha.500" />
+        </InputLeftElement>
+        <Input
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+          placeholder="Search your conversations"
+          bg="blackAlpha.300"
+          border="1px solid"
+          borderColor="whiteAlpha.200"
+          borderRadius="14px"
+          _focus={{ borderColor: "brand.300", boxShadow: "0 0 0 1px #f4a261" }}
+        />
+      </InputGroup>
       <Flex
         flexDir="column"
-        p={3}
-        bg="blackAlpha.200"
         w="100%"
         h="100%"
-        borderRadius="xl"
         overflowY="hidden"
-        gap={2}
       >
+        <Flex align="center" justify="space-between" mb={3}>
+          <Text color="whiteAlpha.600" fontSize="xs" fontWeight="bold" letterSpacing="0.12em">
+            MESSAGES
+          </Text>
+          <Text color="whiteAlpha.500" fontSize="xs">{chats?.length || 0} voyages</Text>
+        </Flex>
         {chats ? (
-          <Stack overflowY="scroll" spacing={2} w="100%">
-            {chats?.map((chat) => (
+          <Stack overflowY="auto" spacing={2} w="100%" pr={1}>
+            {chats.filter((chat) => {
+              const label = chat.isGroupChat
+                ? chat.chatName
+                : getSender(loggedUser, chat.users);
+              return label?.toLowerCase().includes(filter.toLowerCase());
+            }).map((chat) => (
               <Flex
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "brand.500" : "whiteAlpha.100"}
-                color={selectedChat === chat ? "white" : "whiteAlpha.900"}
+                bg={selectedChat?._id === chat._id ? "brand.500" : "whiteAlpha.50"}
+                color={selectedChat?._id === chat._id ? "white" : "whiteAlpha.900"}
                 px={3}
                 py={3}
-                borderRadius="lg"
+                borderRadius="16px"
                 key={chat._id}
-                _hover={{ 
-                  bg: selectedChat === chat ? "brand.600" : "whiteAlpha.300",
-                  transform: "translateX(5px)"
+                _hover={{
+                  bg: selectedChat?._id === chat._id ? "brand.600" : "whiteAlpha.300",
+                  transform: "translateY(-2px)",
+                  borderColor: "whiteAlpha.300",
                 }}
+                border="1px solid transparent"
                 transition="all 0.2s"
                 align="center"
                 gap={3}
               >
-                {!chat.isGroupChat ? (
-                  <Avatar
-                    size="lg"
-                    cursor="pointer"
-                    name={getSenderDetails(loggedUser, chat.users).name}
-                    src={getSenderDetails(loggedUser, chat.users).pic}
-                  />
-                ) : (
-                  <Avatar
-                    size="lg"
-                    cursor="pointer"
-                    src="https://res.cloudinary.com/dudoss6ih/image/upload/v1668261314/onePiece_wxbog4.jpg"
-                  />
-                )}
-                <Text as="b" margin={5} mt={0}>
+                <CrewAvatar
+                  size="md"
+                  isGroup={chat.isGroupChat}
+                  name={chat.isGroupChat ? chat.chatName : getSenderDetails(loggedUser, chat.users).name}
+                  src={chat.isGroupChat ? undefined : getSenderDetails(loggedUser, chat.users).pic}
+                />
+                <Box minW={0} flex={1}>
+                  <Flex justify="space-between" align="center" gap={2}>
+                    <Text fontWeight="bold" noOfLines={1}>
                   {!chat.isGroupChat
                     ? getSender(loggedUser, chat.users)
                     : chat.chatName}
-
+                    </Text>
+                    <Text fontSize="10px" color="whiteAlpha.500" flexShrink={0}>
+                      {chat.latestMessage ? new Date(chat.latestMessage.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                    </Text>
+                  </Flex>
                   {chat?.latestMessage?.sender?.name === user.name ? (
                     <Text
-                      fontSize={{ base: "14px", md: "16px" }}
-                      color="gray.500"
+                      fontSize="sm"
+                      color={selectedChat?._id === chat._id ? "whiteAlpha.800" : "whiteAlpha.500"}
                       fontWeight="normal"
+                      noOfLines={1}
                     >
-                      {chat?.latestMessage && (
-                        <>You : {chat?.latestMessage?.content}</>
-                      )}
+                      You: {chat.latestMessage.content}
                     </Text>
                   ) : (
                     <Text
-                      fontSize={{ base: "14px", md: "16px" }}
-                      color="gray.500"
+                      fontSize="sm"
+                      color={selectedChat?._id === chat._id ? "whiteAlpha.800" : "whiteAlpha.500"}
                       fontWeight="normal"
+                      noOfLines={1}
                     >
-                      {chat.latestMessage?.sender?.name && (
-                        <>
-                          {chat?.latestMessage?.sender?.name} :{" "}
-                          {chat?.latestMessage?.content}
-                        </>
-                      )}
+                      {chat.latestMessage
+                        ? `${chat.latestMessage.sender?.name || "Crew"}: ${chat.latestMessage.content}`
+                        : "Start a new conversation"}
                     </Text>
                   )}
-                </Text>
+                </Box>
               </Flex>
             ))}
           </Stack>
         ) : (
           <ChatLoading />
+        )}
+        {chats?.length === 0 && (
+          <Flex direction="column" align="center" textAlign="center" py={12} px={5}>
+            <Icon as={GiSailboat} boxSize={12} color="brand.200" mb={3} />
+            <Text fontWeight="bold">Your inbox is an open sea</Text>
+            <Text color="whiteAlpha.600" fontSize="sm" mt={1}>Search for someone or create a group to begin.</Text>
+          </Flex>
         )}
       </Flex>
     </Box>

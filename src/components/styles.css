@@ -5,6 +5,10 @@
   scrollbar-width: none;
   height: 100%;
   padding: 10px;
+  background:
+    linear-gradient(rgba(16, 24, 32, .78), rgba(16, 24, 32, .78)),
+    radial-gradient(circle at 80% 20%, rgba(244, 162, 97, .14), transparent 35%);
+  border-radius: 18px;
 }
 
 .messages::-webkit-scrollbar {

@@ -30,7 +30,7 @@ const GroupChatModal = ({ children }) => {
 
   const toast = useToast();
 
-  const { user, chats, setChats } = ChatState();
+  const { chats, setChats } = ChatState();
 
   const handleSearch = async (query) => {
     setSearch(query);
@@ -60,7 +60,7 @@ const GroupChatModal = ({ children }) => {
   };
 
   const handleSubmit = async () => {
-    if (!groupChatName || !selectedUsers) {
+    if (!groupChatName?.trim() || selectedUsers.length < 2) {
       toast({
         title: "Please fill all the feilds",
         status: "warning",
@@ -81,6 +81,10 @@ const GroupChatModal = ({ children }) => {
       );
 
       setChats([data, ...chats]);
+      setGroupChatName("");
+      setSelectedUsers([]);
+      setSearch("");
+      setSearchResult([]);
 
       onClose();
       toast({
@@ -93,7 +97,8 @@ const GroupChatModal = ({ children }) => {
     } catch (error) {
       toast({
         title: "Failed to Create the Chat!",
-        description: error.response.data,
+        description:
+          error.response?.data?.message || "Failed to create the group chat",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -107,7 +112,7 @@ const GroupChatModal = ({ children }) => {
   };
 
   const handleGroup = (userToAdd) => {
-    if (selectedUsers.includes(userToAdd)) {
+    if (selectedUsers.some((user) => user._id === userToAdd._id)) {
       toast({
         title: "User already added",
         status: "warning",

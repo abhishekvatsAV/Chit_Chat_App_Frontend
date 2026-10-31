@@ -9,14 +9,14 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
       display={{ base: selectedChat ? "flex" : "none", md: "flex" }}
       alignItems="center"
       flexDir="column"
-      p={3}
-      bg="whiteAlpha.200"
-      backdropFilter="blur(10px)"
-      w={{ base: "100%", md: "68%" }}
-      borderRadius="xl"
-      borderWidth="1px"
-      borderColor="whiteAlpha.300"
-      boxShadow="2xl"
+      p={{ base: 3, md: 5 }}
+      bg="rgba(20, 31, 40, .62)"
+      backdropFilter="blur(18px)"
+      w={{ base: "100%", md: "calc(100% - 376px)" }}
+      borderRadius="24px"
+      border="1px solid"
+      borderColor="whiteAlpha.200"
+      boxShadow="0 20px 60px rgba(0,0,0,.24)"
       transition="all 0.3s"
       _hover={{ boxShadow: "dark-lg" }}
     >

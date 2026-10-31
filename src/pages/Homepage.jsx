@@ -51,7 +51,7 @@ const Homepage = () => {
           bgGradient="linear(to-r, brand.300, brand.500, brand.300)"
           bgClip="text"
         >
-          💬 Chit-Chat
+          ⚓ Sea Chat
         </Text>
       </Box>
       <Box

@@ -1,6 +1,7 @@
 import {
   Avatar,
   Button,
+  Box,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -19,7 +20,7 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import React, { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import ProfileModal from "./ProfileModal";
@@ -31,6 +32,9 @@ import { getSender } from "../../config/ChatLogics";
 import NotificationBadge from "react-notification-badge";
 import { Effect } from "react-notification-badge";
 import { endpoint } from "../../helper";
+import { FiBell, FiLogOut, FiSearch } from "react-icons/fi";
+import { GiCompass } from "react-icons/gi";
+import CrewAvatar from "../CrewAvatar";
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -71,7 +75,7 @@ const SideDrawer = () => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `/api/user?search=` + search
+        `/api/user?search=${encodeURIComponent(search)}`
       );
       setLoading(false);
       setSearchResult(data);
@@ -102,7 +106,7 @@ const SideDrawer = () => {
     } catch (error) {
       toast({
         title: "Error fetching the chat",
-        description: error.message,
+        description: error.response?.data?.message || error.message,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -116,44 +120,92 @@ const SideDrawer = () => {
       <Flex
         justifyContent="space-between"
         alignItems="center"
-        bg="whiteAlpha.200"
+        bg="rgba(16, 24, 32, .88)"
         backdropFilter="blur(10px)"
         w="100%"
-        p="10px 15px"
-        borderBottomWidth="2px"
-        borderColor="whiteAlpha.300"
-        boxShadow="md"
+        px={{ base: 4, md: 7 }}
+        py={3}
+        borderBottom="1px solid"
+        borderColor="whiteAlpha.200"
+        boxShadow="0 10px 30px rgba(0,0,0,.16)"
         position="sticky"
         top={0}
         zIndex={10}
       >
-        <Tooltip label="Search Users to Chat" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
-            <i className="fa-solid fa-magnifying-glass"></i>
-            <Text display={{ base: "none", md: "flex" }} px="4">
-              Search User
+        <Tooltip label="Find a crew mate" hasArrow placement="bottom-end">
+          <Button
+            variant="ghost"
+            onClick={onOpen}
+            aria-label="Find a crew mate"
+            borderRadius="12px"
+            leftIcon={<FiSearch />}
+            color="whiteAlpha.800"
+            _hover={{ bg: "whiteAlpha.100", color: "brand.200" }}
+          >
+            <Text display={{ base: "none", md: "flex" }}>
+              Find a crew mate
             </Text>
           </Button>
         </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
-          Chit-Chat
-        </Text>
-        <div>
+        <Flex align="center" gap={2}>
+          <Flex
+            align="center"
+            justify="center"
+            w="38px"
+            h="38px"
+            borderRadius="12px"
+            bg="brand.500"
+            color="white"
+            boxShadow="0 6px 18px rgba(209,73,91,.3)"
+          >
+            <GiCompass size={23} />
+          </Flex>
+          <Box display={{ base: "none", sm: "block" }}>
+            <Text fontSize="lg" fontWeight="800" letterSpacing="-0.03em" lineHeight={1}>
+              Sea Chat
+            </Text>
+            <Text fontSize="10px" color="brand.200" letterSpacing="0.14em" fontWeight="bold">
+              FIND YOUR CREW
+            </Text>
+          </Box>
+        </Flex>
+        <Flex align="center" gap={{ base: 1, md: 3 }}>
           <Menu>
-            <MenuButton p={1}>
+            <MenuButton
+              as={Button}
+              variant="ghost"
+              p={2}
+              minW="42px"
+              borderRadius="12px"
+              position="relative"
+              aria-label="Notifications"
+              _hover={{ bg: "whiteAlpha.100" }}
+            >
               <NotificationBadge
                 count={notification.length}
                 effect={Effect.SCALE}
               />
-              <BellIcon fontSize="2xl" m={1} />
+              <FiBell size={20} />
             </MenuButton>
-            <MenuList pl={2} bg="gray.800" borderColor="gray.700" zIndex={10}>
-              {!notification.length && "No New Messages"}
+            <MenuList
+              p={2}
+              bg="#18242d"
+              borderColor="whiteAlpha.200"
+              borderRadius="16px"
+              zIndex={10}
+              boxShadow="0 20px 50px rgba(0,0,0,.35)"
+            >
+              {!notification.length && (
+                <Text px={3} py={2} color="whiteAlpha.600" fontSize="sm">
+                  No new messages
+                </Text>
+              )}
               {notification.map((notif) => (
                 <MenuItem
                   key={notif._id}
-                  bg="gray.800"
-                  _hover={{ bg: "gray.700" }}
+                  borderRadius="10px"
+                  bg="transparent"
+                  _hover={{ bg: "whiteAlpha.100" }}
                   onClick={() => {
                     setSelectedChat(notif.chat);
                     setNotification(notification.filter((n) => n !== notif));
@@ -167,37 +219,46 @@ const SideDrawer = () => {
             </MenuList>
           </Menu>
           <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              <Avatar
-                size="sm"
-                cursor="pointer"
-                name={user.name}
-                src={user.pic}
-              />
+            <MenuButton
+              as={Button}
+              variant="ghost"
+              rightIcon={<ChevronDownIcon />}
+              borderRadius="14px"
+              px={2}
+              _hover={{ bg: "whiteAlpha.100" }}
+            >
+              <CrewAvatar size="sm" name={user.name} src={user.pic} isOnline />
             </MenuButton>
-            <MenuList bg="gray.800" borderColor="gray.700" zIndex={10}>
+            <MenuList bg="#18242d" borderColor="whiteAlpha.200" borderRadius="16px" zIndex={10} p={2}>
               <ProfileModal user={user}>
-                <MenuItem bg="gray.800" _hover={{ bg: "gray.700" }}>
+                <MenuItem borderRadius="10px" bg="transparent" _hover={{ bg: "whiteAlpha.100" }}>
                   My Profile
                 </MenuItem>
               </ProfileModal>
               <MenuDivider borderColor="gray.700" />
               <MenuItem
-                bg="gray.800"
-                _hover={{ bg: "gray.700" }}
+                borderRadius="10px"
+                bg="transparent"
+                icon={<FiLogOut />}
+                _hover={{ bg: "whiteAlpha.100", color: "red.200" }}
                 onClick={logoutHandler}
               >
                 LogOut
               </MenuItem>
             </MenuList>
           </Menu>
-        </div>
+        </Flex>
       </Flex>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
+        <DrawerContent bg="#14212a">
+          <DrawerHeader borderBottom="1px solid" borderColor="whiteAlpha.200">
+            <Text fontSize="lg">Find your next crew mate</Text>
+            <Text fontSize="xs" color="whiteAlpha.600" fontWeight="normal" mt={1}>
+              Search by name or email to start a private chat.
+            </Text>
+          </DrawerHeader>
           <DrawerBody>
             <Flex pb={2}>
               <Input
